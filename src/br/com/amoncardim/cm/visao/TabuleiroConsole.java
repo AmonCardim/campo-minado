@@ -4,6 +4,8 @@ import br.com.amoncardim.cm.excecao.ExplosaoException;
 import br.com.amoncardim.cm.excecao.SairException;
 import br.com.amoncardim.cm.modelo.Tabuleiro;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class TabuleiroConsole {
@@ -46,11 +48,23 @@ public class TabuleiroConsole {
             while (!tabuleiro.objetivoAlcancado()) {
                 System.out.println(tabuleiro);
 
-                String digitado = capturarValorDigitado("Digite (x, y): ");
-            }
+                String digitado = capturarValorDigitado("Digite (x, y) :");
 
+                Iterator<Integer> xy = Arrays.stream(digitado.split(","))
+                        .map(e -> Integer.parseInt(e.trim())).iterator();
+
+                digitado = capturarValorDigitado("1 - Abrir ou 2 = (Des)Marcar: ");
+
+                if ("1".equalsIgnoreCase(digitado)) {
+                    tabuleiro.abrir(xy.next(), xy.next());
+                } else if ("2".equalsIgnoreCase(digitado)) {
+                    tabuleiro.alterarMarcacao(xy.next(), xy.next());
+                }
+            }
+            System.out.println(tabuleiro);
             System.out.println("Você ganhou :)");
         } catch (ExplosaoException e) {
+            System.out.println(tabuleiro);
             System.out.println("Você perdeu :(");
         }
     }
@@ -62,6 +76,7 @@ public class TabuleiroConsole {
         if ("sair".equalsIgnoreCase(digitado)) {
             throw new SairException();
         }
+
         return digitado;
     }
 }
